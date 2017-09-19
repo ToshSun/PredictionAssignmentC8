@@ -1,0 +1,54 @@
+---
+title: "Prediction Assignment"
+author: "T.S"
+date: "12 September 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## executive summary
+###The goal of this project
+* to predict the manner in which they did the exercise
+* describing 
+ + how to build my model
+ + how to use cross validation
+ + the expected out of sample error
+ + why to choose 
+ + use the prediction model to predict 20 different test cases.
+ 
+
+```{r data}
+library(dplyr)
+library(caret)
+download.file("https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv",destfile = "./pml_training.csv")
+download.file("https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv",destfile = "./pml_testing.csv")
+
+pml_traindata<-read.csv(file = "./pml_training.csv")
+pml_testdata<-read.csv(file = "./pml_testing.csv")
+
+inTrain<-createDataPartition(pml_traindata$classe,p=0.7,list=FALSE)
+traindata<-pml_traindata[inTrain,]
+testdata<-pml_traindata[-inTrain,]
+
+
+train_d<-traindata %>%
+  select("classe",starts_with("accel"))
+test_d<-testdata %>%
+  select("classe",starts_with("accel"))
+
+fit<-train(classe~. ,data=train_d,method="rf")
+pred<-predict(fit,test_d[,-c(1)])
+table(test_d$classe,pred)
+
+
+```
+
+## Including Plots
+
+```{r f2}
+
+```
+
